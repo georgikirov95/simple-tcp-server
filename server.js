@@ -11,6 +11,7 @@ server.on("connection", (socket) => {
 
     socket.on("data", async (data) => {
         if (fileHandler === null) {
+            socket.pause()
             const dataAsString = data.toString("utf-8")
             const delimiter = dataAsString.indexOf("*****")
             const fileName = dataAsString.substring(10, delimiter).trim()
@@ -23,6 +24,7 @@ server.on("connection", (socket) => {
             })
 
             fileStream.write(data.subarray(delimiter + 5))
+            socket.resume()
         } else {
             if (!fileStream.write(data)) {
                 socket.pause()
